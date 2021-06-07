@@ -1,0 +1,9 @@
+{
+    DO I FROM 1 TO 5 {
+        DO J FROM 1 TO 6 {
+            FD 100
+            LT 72
+        }
+        LT 144
+    }
+}

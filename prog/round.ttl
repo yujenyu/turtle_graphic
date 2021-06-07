@@ -1,0 +1,14 @@
+{
+    DO I FROM 1 TO 8 {
+        FD 100
+        LT 38
+        FD 80
+        LT 50
+        FD 36
+        RT 180
+        FD 20
+        RT 180
+        LT 45
+        FD 23
+    }
+}

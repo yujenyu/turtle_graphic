@@ -1,0 +1,9 @@
+{
+    DO X FROM 0 TO 40 {
+        DO Y FROM 0 TO 5 {
+            FD 100
+            RT 61
+        }
+        RT 11
+    }
+}

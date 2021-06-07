@@ -1,0 +1,12 @@
+{
+    DO I FROM 1 TO 8 {
+        RT 45
+        DO J FROM 1 TO 4 {
+            DO K FROM 1 TO 90 {
+                FD 2
+                RT 2
+            }
+            RT 90
+        }
+    }
+}

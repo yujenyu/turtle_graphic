@@ -1,0 +1,11 @@
+{
+    SET L := 50 ;
+    DO I FROM 1 TO 25 {
+        DO J FROM 1 TO 4 {
+            FD L
+            RT 90
+        }
+        SET L := * L 1.05 ;
+        RT 10
+    }
+}

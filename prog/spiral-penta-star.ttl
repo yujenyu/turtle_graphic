@@ -1,0 +1,12 @@
+{
+    SET X := 0 ;
+    DO I FROM 1 TO 32 {
+        DO J FROM 1 TO 5 {
+            FD X
+            RT 144
+        }
+        FD X
+        RT 30
+        SET X := + X 3 ;
+    }
+}

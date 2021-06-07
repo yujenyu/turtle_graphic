@@ -1,0 +1,10 @@
+{
+    DO I FROM 1 TO 36 {
+        DO J FROM 1 TO 4 {
+            FD 50
+            RT 90
+        }
+        FD 100
+        RT 300
+    }
+}

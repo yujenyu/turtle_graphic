@@ -1,0 +1,23 @@
+## Add scope manipulation in parser (sym_scope)
+
+Since the '}' is produced by <INSTRCTLST>, I decrease the scope when the do-loop
+ends, after '}' is read (note that '}' is read multiple times since it is part
+of the <INSTRCTLST>).
+
+## LOGO Test Programs (under "/prog" folder)
+
+Most test program is rewrite from LOGO language and reference to "Logo 15-word
+challenge" website. (http://www.mathcats.com/gallery/15wordcontest.html)
+Others are rewritten from internet resources or directly from problem examples.
+For "dahlia.lgo", changing J's repetition from 1 to 7 can show different result.
+
+## Show input program filename on window
+
+Use <SDL_SetWindowTitle> function, Extract the filename from a compelete path by
+<basename> function which included in <libgen.h>
+
+## Random color
+
+Use random number to render the graph and background in <SDL_SetRenderDrawColor>
+function. I adjust the parameters by random numbers to make the output window's
+color change randomly.

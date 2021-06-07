@@ -1,0 +1,6 @@
+{
+    DO A FROM 5 TO 60 {
+        FD A
+        RT 24
+    }
+}

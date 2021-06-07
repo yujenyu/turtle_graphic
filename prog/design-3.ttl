@@ -1,0 +1,10 @@
+{
+    DO I FROM 1 TO 100 {
+        SET X := + 5 I ;
+        FD X
+        RT 45
+        SET X := + 10 I ;
+        FD X
+        RT 60
+    }
+}

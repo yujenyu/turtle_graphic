@@ -1,0 +1,217 @@
+********************** An Interpreter for Turtle Graphics **********************
+
+## Compile
+Run the following instruction to compile.
+
+make parse      /* To compile a parser */
+make interp     /* To compile an interpreter */
+
+## Run
+Run the parser or interpreter, followed by an input program.
+
+./parse prog/example.tll
+./interp prog/example.tll
+
+## Read the result
+The parser is no output if the input file is valid. Otherwise, exits with 1.
+The following instruction can read the return value.
+
+The interpreter create a window to show the SDL result if the input program is
+valid. Otherwise, it prints an error message on the console through SDL_Log().
+
+## Grammar
+
+The grammar of the Turtle Graphics is as below.
+
+<MAIN>        ::= "{" <INSTRCTLST>
+              ;
+<INSTRCTLST>  ::= <INSTRUCTION> <INSTRCTLST> | "}"
+              ;
+<INSTRUCTION> ::= <FD> | <LT> | <RT> | <DO> | <SET>
+              ;
+<FD>          ::= "FD" <VARNUM>
+              ;
+<LT>          ::= "LT" <VARNUM>
+              ;
+<RT>          ::= "RT" <VARNUM>
+              ;
+<DO>          ::= "DO" <VAR> "FROM" <VARNUM> "TO" <VARNUM> "{" <INSTRUCTLIST>
+              ;
+<VAR>         ::= [A-Z]
+              ;
+<VARNUM>      ::= number | <VAR>
+              ;
+<SET>         ::= "SET" <VAR> ":=" <POLISH> ";"
+              ;
+<POLISH>      ::= <OP> <POLISH> <POLISH> | <VARNUM>
+              ;
+<OP>          ::= "+" | "-" | "*" | "/"
+              ;
+
+****************************** Development process *****************************
+
+Parser -> SDL(cursor) -> Merge parser and cursor -> Interpreter(with symtb)
+
+1.  Identify token
+2.  Simple parsing
+3.  Parse all programs
+4.  Start SDL
+5.  Coordinate SDL reference
+6.  Revise SDL data-types to linked list
+7.  *** Revise <POLISH> grammar ***
+8.  Sum up SDL
+9.  Merge SDL functions with PARSER
+10. Create symbol table to store data
+11. Make <DO> loop interpret correctly
+12. Make <SET> <POLISH> interpert correctly
+13. Add scope manipulation in parser
+14. Final test
+
+**************** Rewrite POLISH grammar to exclude invalid input ***************
+
+The original production rules not only accept the polish expression(prefix)
+but also accept the reverse polish expression (postfix).
+Thus, the production rule is not accurate enough and also may not avoid some
+invalid inputs (semantically meaningless).
+
+> To observe how the new grammar rules work, via the following
+> input example (from Wikipedia):
+>
+>              -
+>            /   \
+>           *     +
+>          / \   / \
+>        '/'  3 2   +
+>        / \       / \
+>       15  -     1   1
+>          / \
+>         7   +
+>            / \
+>           1   1
+>
+>   - * / 15 - 7 + 1 1 3 + 2 + 1 1 = 45 (polish)
+>   15 7 1 1 + - / 3 * 2 1 1 + + - = 45 (reverse polish)
+>
+> The original grammars accept all polish, reverse polish or even
+> expressions without any operator. For example,
+>
+>   15 7 1 1 3 2 1 1
+>
+> is also acceptable, but clearly meaningless.
+
+Therefore, I rewrite the SET and POLISH grammar rules so that it
+only accept polish expression (prefix).
+
+Also, the example input programs use reverse polish expression
+(postfix). Here I modify them to polish expression as a standard.
+
+******************************** Important info ********************************
+
+I use the original grammar in parser, changing my grammar for interpreter. In
+my "/parser/parser.c", there are two grammar inside <match_polish> function.
+
+Can switch between parser & interpreter by "#define INTERPRET" which included
+in Makefile "-D$(INTERP_DEF)"
+
+Mutual definition is in "general.h" header file which under "header" folder.
+
+The ORIGINAL version which follow the original grammar:
+    - /parser/parser.c
+
+The REVISED version which follow the new grammar:
+    - /parser/parser_revised.c
+
+Affected test program:
+    - spiral1_c.ttl
+    - spiral2_c.ttl
+
+I made the operator from postfix to prefix to follow polish grammar manually.
+The test file is under "prog" folder.
+    - in test program: "spiral1_c.ttl", i made "var.ttl" instead:
+        SET C := A 1.5 * ;  ----->  SET C := * A 1.5 ;
+
+    - in test program: "spiral2_c.ttl", i made "nested-loops.ttl" instead:
+        SET C := A 5 / ;  ----->  SET C := / A 5 ;
+
+************************************ Testing ***********************************
+
+## Test parser fuctions <is_> <match_>
+
+I create some fuctions to check the token, and print it on screen to check if
+the function runs accurately. Inside each <match_> function "fscanf()" the "buf"
+and "printf()" it to check. It helps me to debug if something runs unexpected.
+
+    <is_> functions : To check the input string. eg:
+
+        while (fscanf(fd, "%s", buf) != EOF) {
+            if (is_int(buf)) {
+                printf("--int--: %d\n", atoi(buf));
+            }
+            else if (){
+                ......
+            }
+            else {
+                ......
+            }
+        }
+
+    <match_> functions : To check if the input match the grammer. eg:
+
+        fscanf(fd, "%s", buf);
+        printf("Matching polish with %s\n", buf);
+
+## To make sure everything goes well with SDL functions, I wrote some code to
+   check if the output images present properly. The test file is under folder
+   called "SDL_practice". eg:
+
+    In "sdl_octloop.c":
+
+        for (i = 1; i <= 8; ++i) {
+            cursor_forward(30);
+            cursor_turn_deg(45);
+        }
+
+    In "sdl_nestloop.c":
+
+        for (i = 1; i <= 50; ++i) {
+            cursor_forward(i);
+            cursor_turn_deg(30);
+            for (j = 1; j <= 8; ++j) {
+                cursor_forward(i/5);
+                cursor_turn_deg(45);
+            }
+        }
+
+## Test interpreter with symbol table:
+I wrote some code in main function to test if my <symtb_> functions runs
+expectably. The test file is in folder called "interpreter". eg:
+
+    symtb_insert(&head, 'A', 0, 3.14);
+    symtb_insert(&head, 'B', 1, 2.17);
+    symtb_insert(&head, 'C', 2, 0.25);
+
+    symtb_delete(head, 2);
+    symtb_update_val(head, 'C', 2, 0.27);
+    symtb_insert(&head, 'C', 3, 0.29);
+
+    val = 0;
+    if (symtb_find_val(head, 'C', 5, &val)) {
+        SDL_Log("symtable table entry %f", val);
+    }
+    else {
+        SDL_Log("symtb empty\n");
+    }
+
+    SDL_Log("symtb test end\n");
+
+
+## Use "SDL_Log()" due to "printf()" fails under SDL:
+
+Due to the import of SDL, "printf()" fails to print message on the console,
+use "SDL_Log()" instead. Moreover, the return value now is always 0 due to
+SDL. If the input program is valid, the parser create a blank window.
+Otherwise, print an error message on the console.
+
+## In my final test, i added some test programs adapted from Internet sources to
+make sure my project runs properly. The test programs which i've done will
+explain in "extension.txt".

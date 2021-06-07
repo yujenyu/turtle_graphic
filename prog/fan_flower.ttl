@@ -1,0 +1,12 @@
+{
+    DO I FROM 1 TO 12 {
+        DO J FROM 1 TO 75 {
+            FD 80
+            RT 180
+            FD 80
+            RT 180
+            RT 2
+        }
+        FD 150
+    }
+}

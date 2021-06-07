@@ -1,0 +1,7 @@
+{
+    DO I FROM 1 TO 1800 {
+        FD 10
+        SET X := + I 0.1 ;
+        RT X
+    }
+}

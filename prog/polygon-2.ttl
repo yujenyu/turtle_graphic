@@ -1,0 +1,11 @@
+{
+    DO I FROM 1 TO 4 {
+        DO J FROM 1 TO 20 {
+            LT 160
+            FD 20
+            RT 160
+            FD 20
+        }
+        RT 90
+    }
+}

@@ -1,0 +1,20 @@
+{
+    SET A := 30 ;
+    SET B := 45 ;
+    FD A
+    LT B
+    FD A
+    LT B
+    FD A
+    LT B
+    FD A
+    LT B
+    FD A
+    LT B
+    FD A
+    LT B
+    FD A
+    LT B
+    FD A
+    LT B
+}

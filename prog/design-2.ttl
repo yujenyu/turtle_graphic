@@ -1,0 +1,12 @@
+{
+    DO I FROM 1 TO 16 {
+        FD 85
+        LT 60
+        FD 107
+        RT 180
+        FD 72
+        RT 180
+        LT 53
+        FD 74
+    }
+}
